@@ -63,51 +63,40 @@ func RegisterVerifyMeRoute() {
 			return
 		}
 
-		customer := database.QueryRow[database.Customer](`
-			select (id, email, veriffIdvSessionId, veriffIdvSessionUrl, veriffPoaSessionId, veriffPoaSessionUrl) 
-			from customer where email=$1
-		`,
-			claims.Email,
-		)
-
 		var idvUrl string
 		var poaUrl string
-		if customer == nil {
-			veriffIdvApiKey := internal.GetEnv()[internal.VERIFF_IDV_API_KEY]
-			veriffIdvResponse, err := getVeriffUrl(veriffIdvApiKey)
-			if err != nil {
-				log.Panicf("Error getting Veriff response: %v", err)
-				http.Redirect(w, r, "/error", http.StatusSeeOther)
-				return
-			}
 
-			veriffPoaApiKey := internal.GetEnv()[internal.VERIFF_POA_API_KEY]
-			veriffPoaResponse, err := getVeriffUrl(veriffPoaApiKey)
-			if err != nil {
-				log.Panicf("Error getting Veriff response: %v", err)
-				http.Redirect(w, r, "/error", http.StatusSeeOther)
-				return
-			}
-
-			err = database.CreateCustomer(
-				claims.Email,
-				veriffIdvResponse.Verification.Id,
-				veriffIdvResponse.Verification.Url,
-				veriffPoaResponse.Verification.Id,
-				veriffPoaResponse.Verification.Url,
-			)
-			if err != nil {
-				log.Panicf("User could not be created! %v", err)
-				http.Redirect(w, r, "/error", http.StatusSeeOther)
-				return
-			}
-
-			idvUrl = veriffIdvResponse.Verification.Url
-			poaUrl = veriffPoaResponse.Verification.Url
-		} else {
-			idvUrl = customer.VeriffIdvSessionUrl
-			poaUrl = customer.VeriffPoaSessionUrl
+		veriffIdvApiKey := internal.GetEnv()[internal.VERIFF_IDV_API_KEY]
+		veriffIdvResponse, err := getVeriffUrl(veriffIdvApiKey)
+		if err != nil {
+			log.Panicf("Error getting Veriff response: %v", err)
+			http.Redirect(w, r, "/error", http.StatusSeeOther)
+			return
 		}
+
+		veriffPoaApiKey := internal.GetEnv()[internal.VERIFF_POA_API_KEY]
+		veriffPoaResponse, err := getVeriffUrl(veriffPoaApiKey)
+		if err != nil {
+			log.Panicf("Error getting Veriff response: %v", err)
+			http.Redirect(w, r, "/error", http.StatusSeeOther)
+			return
+		}
+
+		err = database.CreateCustomer(
+			claims.Email,
+			veriffIdvResponse.Verification.Id,
+			veriffIdvResponse.Verification.Url,
+			veriffPoaResponse.Verification.Id,
+			veriffPoaResponse.Verification.Url,
+		)
+		if err != nil {
+			log.Panicf("User could not be created! %v", err)
+			http.Redirect(w, r, "/error", http.StatusSeeOther)
+			return
+		}
+
+		idvUrl = veriffIdvResponse.Verification.Url
+		poaUrl = veriffPoaResponse.Verification.Url
 
 		tmpl, err := template.ParseFiles(mainLayout, page)
 		if err != nil {
