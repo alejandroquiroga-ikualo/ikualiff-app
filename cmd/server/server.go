@@ -21,6 +21,7 @@ func main() {
 
 	web.RegisterLoginRoute()
 	web.RegisterVerifyMeRoute()
+	web.RegisterFinishRoute()
 	web.RegisterAnyRoute()
 
 	app, err := newrelic.NewApplication(

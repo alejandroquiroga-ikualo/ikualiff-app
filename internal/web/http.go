@@ -113,6 +113,20 @@ func RegisterVerifyMeRoute() {
 	})
 }
 
+func RegisterFinishRoute() {
+	http.HandleFunc("/finish", func(w http.ResponseWriter, r *http.Request) {
+		mainLayout := filepath.Join("web/templates", "layout.html")
+		page := filepath.Join("web/pages", "finish.html")
+
+		tmpl, err := template.ParseFiles(mainLayout, page)
+		if err != nil {
+			log.Panic(err)
+		}
+
+		tmpl.ExecuteTemplate(w, "layout", nil)
+	})
+}
+
 func RegisterAnyRoute() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusFound)
