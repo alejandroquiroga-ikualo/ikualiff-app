@@ -13,7 +13,8 @@ const (
 	API_KEY             EnvKey = "API_KEY"
 	API_JWT_KEY                = "API_JWT_KEY"
 	VERIFF_URL                 = "VERIFF_URL"
-	VERIFF_API_KEY             = "VERIFF_API_KEY"
+	VERIFF_IDV_API_KEY         = "VERIFF_IDV_API_KEY"
+	VERIFF_POA_API_KEY         = "VERIFF_POA_API_KEY"
 	VERIFF_CALLBACK_URL        = "VERIFF_CALLBACK_URL"
 	DATABASE_URL               = "DATABASE_URL"
 )
@@ -24,7 +25,15 @@ func GetEnv() map[EnvKey]string {
 		panic("Error loading .env file!")
 	}
 
-	envRegistry := []EnvKey{API_KEY, API_JWT_KEY, VERIFF_URL, VERIFF_API_KEY, VERIFF_CALLBACK_URL, DATABASE_URL}
+	envRegistry := []EnvKey{
+		API_KEY, 
+		API_JWT_KEY, 
+		VERIFF_URL, 
+		VERIFF_IDV_API_KEY, 
+		VERIFF_POA_API_KEY,
+		VERIFF_CALLBACK_URL, 
+		DATABASE_URL,
+	}
 	result := make(map[EnvKey]string)
 
 	for _, registry := range envRegistry {

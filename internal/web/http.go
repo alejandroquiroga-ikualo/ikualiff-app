@@ -64,25 +64,37 @@ func RegisterVerifyMeRoute() {
 		}
 
 		customer := database.QueryRow[database.Customer](`
-			select (id, email, veriffSessionId, veriffSessionUrl) 
+			select (id, email, veriffIdvSessionId, veriffIdvSessionUrl, veriffPoaSessionId, veriffPoaSessionUrl) 
 			from customer where email=$1
 		`,
 			claims.Email,
 		)
 
-		var url string
+		var idvUrl string
+		var poaUrl string
 		if customer == nil {
-			veriffResponse, err := getVeriffUrl()
+			veriffIdvApiKey := internal.GetEnv()[internal.VERIFF_IDV_API_KEY]
+			veriffIdvResponse, err := getVeriffUrl(veriffIdvApiKey)
 			if err != nil {
 				log.Panicf("Error getting Veriff response: %v", err)
 				http.Redirect(w, r, "/error", http.StatusSeeOther)
 				return
 			}
 
-			err = database.CreateUser(
+			veriffPoaApiKey := internal.GetEnv()[internal.VERIFF_POA_API_KEY]
+			veriffPoaResponse, err := getVeriffUrl(veriffPoaApiKey)
+			if err != nil {
+				log.Panicf("Error getting Veriff response: %v", err)
+				http.Redirect(w, r, "/error", http.StatusSeeOther)
+				return
+			}
+
+			err = database.CreateCustomer(
 				claims.Email,
-				veriffResponse.Verification.Id,
-				veriffResponse.Verification.Url,
+				veriffIdvResponse.Verification.Id,
+				veriffIdvResponse.Verification.Url,
+				veriffPoaResponse.Verification.Id,
+				veriffPoaResponse.Verification.Url,
 			)
 			if err != nil {
 				log.Panicf("User could not be created! %v", err)
@@ -90,9 +102,11 @@ func RegisterVerifyMeRoute() {
 				return
 			}
 
-			url = veriffResponse.Verification.Url
+			idvUrl = veriffIdvResponse.Verification.Url
+			poaUrl = veriffPoaResponse.Verification.Url
 		} else {
-			url = customer.VeriffSessionUrl
+			idvUrl = customer.VeriffIdvSessionUrl
+			poaUrl = customer.VeriffPoaSessionUrl
 		}
 
 		tmpl, err := template.ParseFiles(mainLayout, page)
@@ -101,9 +115,11 @@ func RegisterVerifyMeRoute() {
 		}
 
 		tmpl.ExecuteTemplate(w, "auth-layout", struct {
-			Url string
+			IdvUrl string
+			PoaUrl string
 		}{
-			Url: url,
+			IdvUrl: idvUrl,
+			PoaUrl: poaUrl,
 		})
 	})
 }
@@ -126,7 +142,7 @@ func getRequestClaims(r *http.Request) (*internal.Claims, error) {
 	return nil, errors.New("accessToken not present in request.")
 }
 
-func getVeriffUrl() (VeriffResponse, error) {
+func getVeriffUrl(veriffApiKey string) (VeriffResponse, error) {
 	veriffUrl := internal.GetEnv()[internal.VERIFF_URL]
 	veriffCallbackUrl := internal.GetEnv()[internal.VERIFF_CALLBACK_URL]
 
@@ -144,8 +160,6 @@ func getVeriffUrl() (VeriffResponse, error) {
 	if err != nil {
 		log.Panic(err)
 	}
-
-	veriffApiKey := internal.GetEnv()[internal.VERIFF_API_KEY]
 
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("X-AUTH-CLIENT", veriffApiKey)

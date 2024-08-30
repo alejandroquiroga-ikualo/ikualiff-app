@@ -1,7 +1,11 @@
 {{ define "body" }}
 <script defer>
-function launchVeriff() {
-    window.location.href = {{ .Url }}
+function launchIdvVeriff() {
+    window.location.href = {{ .IdvUrl }};
+}
+
+function launchPoaVeriff() {
+    window.location.href = {{ .PoaUrl }};
 }
 </script>
 
@@ -18,16 +22,28 @@ function launchVeriff() {
         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
     </svg>
 
-    <div class="text-center">
+    <div class="flex gap-4">
         <div class="relative group inline-block w-fit mx-auto">
             <div
-                class="absolute pointer-events-none bottom-0 left-0 w-full opacity-0 transition-all group-hover:-translate-y-5 group-hover:opacity-100">
-                <img class="w-3/4 mx-auto" src="/web/static/images/ram.svg" />
+                class="absolute pointer-events-none bottom-0 left-0 w-full opacity-0 transition-all group-hover:-translate-y-8 group-hover:opacity-100">
+                <img class="w-3/4 max-w-32 mx-auto" src="/web/static/images/ram.svg" />
             </div>
 
-            <button onclick="launchVeriff()"
-                class="relative border-indigo-800 border-2 font-bold px-4 py-2 rounded-lg bg-indigo-700 text-white hover:bg-indigo-800 transition active:bg-indigo-900">
-                Iniciar Validación
+            <button onclick="launchIdvVeriff()"
+                class="relative max-w-48 border-indigo-800 border-2 font-bold px-4 py-2 rounded-lg bg-indigo-700 text-white hover:bg-indigo-800 transition active:bg-indigo-900">
+                Iniciar Validación de Identidad
+            </button>
+        </div>
+
+        <div class="relative group inline-block w-fit mx-auto">
+            <div
+                class="absolute pointer-events-none bottom-0 left-0 w-full opacity-0 transition-all group-hover:-translate-y-8 group-hover:opacity-100">
+                <img class="w-3/4 max-w-32 mx-auto" src="/web/static/images/ram.svg" />
+            </div>
+
+            <button onclick="launchIdvVeriff()"
+                class="relative max-w-48 border-indigo-800 border-2 font-bold px-4 py-2 rounded-lg bg-indigo-700 text-white hover:bg-indigo-800 transition active:bg-indigo-900">
+                Iniciar Validación de Dirección
             </button>
         </div>
     </div>
