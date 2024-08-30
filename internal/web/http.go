@@ -128,10 +128,11 @@ func getRequestClaims(r *http.Request) (*internal.Claims, error) {
 
 func getVeriffUrl() (VeriffResponse, error) {
 	veriffUrl := internal.GetEnv()[internal.VERIFF_URL]
+	veriffCallbackUrl := internal.GetEnv()[internal.VERIFF_CALLBACK_URL]
 
 	data, err := json.Marshal(map[string]interface{}{
 		"verification": map[string]interface{}{
-			"callback": "https://sincerely-new-fox.ngrok-free.app",
+			"callback": veriffCallbackUrl,
 		},
 	})
 
