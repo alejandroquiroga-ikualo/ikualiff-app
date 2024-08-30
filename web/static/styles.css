@@ -1,0 +1,10 @@
+body {
+    background-image: radial-gradient(#A4B3FB 2px, transparent 2px);
+    background-size: 32px 32px;
+    background-color: #c5d0fc;
+}
+
+.htmx-request {
+    display: flex !important;
+    opacity: 1 !important;
+}

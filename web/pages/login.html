@@ -1,0 +1,63 @@
+{{ define "body" }}
+<div class="absolute top-0 left-0 w-full h-full">
+    <div class="flex container mx-auto px-2 py-4 justify-end">
+        <div id="notification" class="z-20 space-y-2">
+        </div>
+    </div>
+</div>
+
+<div class="relative bg-white px-12 py-16 shadow-md rounded-lg overflow-hidden border-indigo-300 border">
+    <div id="spinner" class="transition hidden opacity-0 absolute flex-col top-0 left-0 w-full h-full bg-white/70 z-10 items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="stroke-indigo-700 w-12 animate-spin">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+
+        <h1 class="font-bold text-indigo-800">
+            Ingresando...
+        </h1>
+    </div>
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-center text-indigo-900">Bienvenido a Íkualiff</h1>
+        <h2 class="text-xl font-semibold text-center text-gray-800">Ingresar</h2>
+    </div>
+
+    <form 
+        hx-post="/api/login"
+        class="space-y-4" 
+        hx-indicator="#spinner" 
+        hx-target="#notification" 
+        hx-swap="beforeend">
+
+        <div class="flex flex-col gap-1 mb-4">
+            <label class="text-sm text-indigo-800" for="email">
+                Correo Electrónico
+            </label>
+            <input
+                class="border-2 border-indigo-300 rounded-lg px-2 py-1"
+                id="email"
+                type="email" name="email"
+            >
+        </div>
+
+        <div class="flex flex-col gap-1 mb-4">
+            <label class="text-sm text-indigo-800" for="code">
+                Código
+            </label>
+            <input
+                class="border-2 border-indigo-300 rounded-lg px-2 py-1"
+                id="code"
+                type="text" name="code"
+            >
+        </div>
+
+        <div class="text-center space-y-4">
+            <button 
+                type="submit"
+                class="relative border-indigo-800 border-2 font-bold px-4 py-2 rounded-lg bg-indigo-700 text-white hover:bg-indigo-800 transition active:bg-indigo-900">
+                Ingresar
+            </button>
+        </div>
+    </form>
+</div>
+{{end}}

@@ -1,0 +1,16 @@
+<div 
+    _="on load wait 5s remove me" 
+    id="card" 
+    class="bg-white rounded-lg shadow-md border border-gray-300 p-2">
+    <div class="relative rounded-md border border-red-300 py-2 px-3">
+        <h1 class="text-center text-red-800 font-bold text-sm">¡Error!</h1>
+        <p class="text-gray-900">{{ . }}</p>
+        <button 
+            class="absolute top-2 right-2 border-red-300 border p-1 rounded-lg bg-red-100 text-white hover:bg-red-200 transition active:bg-red-300"
+            _="on click tell #card remove yourself">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3.5" class="stroke-red-400 w-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+</div>
